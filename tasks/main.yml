@@ -76,9 +76,9 @@
       - xz-utils
       - zlib1g-dev
 
-- name: Create Snort Build Directory
+- name: Create Snort Source Directory
   ansible.builtin.file:
-    path: /usr/src
+    path: /usr/src/snort
     state: directory
     mode: '0755'
     owner: root
@@ -87,12 +87,12 @@
 - name: Download Safeclib
   ansible.builtin.shell:
     cmd: wget `curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.bz2$"`
-    chdir: /usr/src
+    chdir: /usr/src/snort
 
 - name: Download Gperftools
   ansible.builtin.shell:
     cmd: wget `curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.gz$"`
-    chdir: /usr/src
+    chdir: /usr/src/snort
 
 - name: Download Snort3
   ansible.builtin.shell: |
@@ -100,7 +100,7 @@
 
     wget `curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url` -O snort-$snort3_version.tar.gz
   args:
-    chdir: /usr/src
+    chdir: /usr/src/snort
 
 - name: Download Snort3 Libdaq
   ansible.builtin.shell: |
@@ -108,7 +108,7 @@
 
     wget `curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url` -O libdaq-$libdaq_version.tar.gz
   args:
-    chdir: /usr/src
+    chdir: /usr/src/snort
 
 - name: Download Snort3 Extras
   ansible.builtin.shell: |
@@ -116,30 +116,30 @@
 
     wget `curl -fsSL https://api.github.com/repos/snort3/snort3_extra/tags | jq -r --arg snort3_version "$snort3_version" '.[] | select(.name==$snort3_version) | .tarball_url'` -O snort3_extras-$snort3_version.tar.gz
   args:
-    chdir: /usr/src
+    chdir: /usr/src/snort
 
 - name: Download Snort OpenAppID
   ansible.builtin.get_url:
     url: https://snort.org/downloads/openappid/snort-openappid.tar.gz
-    dest: /usr/src/snort-openappid.tar.gz
+    dest: /usr/src/snort/snort-openappid.tar.gz
     mode: '0644'
     validate_certs: false
 
 - name: Git Clone PulledPork3
   ansible.builtin.git:
     repo: https://github.com/shirkdog/pulledpork3
-    dest: /usr/src/pulledpork
+    dest: /usr/src/snort/pulledpork
 
 - name: Git Clone VectorScan
   ansible.builtin.git:
     repo: https://github.com/VectorCamp/vectorscan
-    dest: /usr/src/vectorscan
+    dest: /usr/src/snort/vectorscan
 
 - name: Extract Gperftools
   ansible.builtin.unarchive:
-    src: /usr/src/gperftools-2.15.tar.gz
-    dest: /usr/src/
-    remote_src: yes
+    src: /usr/src/snort/gperftools-2.15.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
 
 - name: Build Gperftools
   ansible.builtin.shell: |
@@ -149,13 +149,13 @@
 
     make install
   args:
-    chdir: /usr/src/gperftools-2.15
+    chdir: /usr/src/snort/gperftools-2.15
 
 - name: Extract Safeclib
   ansible.builtin.unarchive:
-    src: /usr/src/safeclib-3.8.1.tar.bz2
-    dest: /usr/src/
-    remote_src: yes
+    src: /usr/src/snort/safeclib-3.8.1.tar.bz2
+    dest: /usr/src/snort/
+    remote_src: true
 
 - name: Build Safeclib
   ansible.builtin.shell: |
@@ -165,13 +165,13 @@
 
     make install
   args:
-    chdir: /usr/src/safeclib-3.8.1.0-gdfea26
+    chdir: /usr/src/snort/safeclib-3.8.1.0-gdfea26
 
 - name: Extract Snort3 Libdaq
   ansible.builtin.unarchive:
-    src: /usr/src/libdaq-v3.0.14.tar.gz
-    dest: /usr/src/
-    remote_src: yes
+    src: /usr/src/snort/libdaq-v3.0.14.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
 
 - name: Build Snort3 Libdaq
   ansible.builtin.shell: |
@@ -183,11 +183,11 @@
 
     make install
   args:
-    chdir: /usr/src/snort3-libdaq-05ea17c
+    chdir: /usr/src/snort/snort3-libdaq-05ea17c
 
 - name: Create VectorScan Build directory
   ansible.builtin.file:
-    path: /usr/src/vectorscan/build
+    path: /usr/src/snort/vectorscan/build
     state: directory
     owner: root
     group: root
@@ -201,19 +201,19 @@
 
     make install
   args:
-    chdir: /usr/src/vectorscan/build
+    chdir: /usr/src/snort/vectorscan/build
 
 - name: Extract Snort3
   ansible.builtin.unarchive:
-    src: /usr/src/snort-3.1.84.0.tar.gz
-    dest: /usr/src/
-    remote_src: yes
+    src: /usr/src/snort/snort-3.1.84.0.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
 
 - name: Build Snort3 | Part 1
   ansible.builtin.shell: |
     ./configure_cmake.sh --prefix=/usr/local --enable-tcmalloc
   args:
-    chdir: /usr/src/snort3-snort3-caf79b9
+    chdir: /usr/src/snort/snort3-snort3-caf79b9
 
 - name: Build Snort3 | Part 2
   ansible.builtin.shell: |
@@ -223,23 +223,23 @@
 
     ldconfig
   args:
-    chdir: /usr/src/snort3-snort3-caf79b9/build
+    chdir: /usr/src/snort/snort3-snort3-caf79b9/build
 
 - name: Extract OpenAppID
   ansible.builtin.unarchive:
-    src: /usr/src/snort-openappid.tar.gz
+    src: /usr/src/snort/snort-openappid.tar.gz
     dest: /usr/local/lib/
     owner: root
     group: root
-    remote_src: yes
+    remote_src: true
 
 - name: Extract Snort3 Extras
   ansible.builtin.unarchive:
-    src: /usr/src/snort3_extras-3.1.84.0.tar.gz
-    dest: /usr/src/
+    src: /usr/src/snort/snort3_extras-3.1.84.0.tar.gz
+    dest: /usr/src/snort/
     owner: root
     group: root
-    remote_src: yes
+    remote_src: true
 
 - name: Build Snort3 Extras | Part 1
   ansible.builtin.shell: |
@@ -247,7 +247,7 @@
 
     ./configure_cmake.sh --prefix=/usr/local
   args:
-    chdir: /usr/src/snort3-snort3_extra-b81e2e4
+    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4
 
 - name: Build Snort3 Extras | Part 2
   ansible.builtin.shell: |
@@ -257,11 +257,11 @@
 
     make install
   args:
-    chdir: /usr/src/snort3-snort3_extra-b81e2e4/build
+    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4/build
 
 - name: Install PulledPork3
   ansible.builtin.copy:
-    src: /usr/src/pulledpork
+    src: /usr/src/snort/pulledpork
     dest: /usr/local/etc/snort/
     remote_src: true
 
@@ -330,3 +330,8 @@
     state: started
     enabled: true
     daemon_reload: true
+
+- name: Delete Snort Source Directory
+  ansible.builtin.file:
+    path: /usr/src/snort
+    state: absent
