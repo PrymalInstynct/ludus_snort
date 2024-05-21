@@ -7,7 +7,10 @@ None
 
 ## Role Variables
 
-None.
+```yaml
+ludus_snort_interface: enp2s0
+ludus_oinkcode: xxxxxxxxxxxxxxxxxxxxxxxx
+```
 
 ## Dependencies
 
@@ -37,6 +40,7 @@ ludus:
       - PrymalInstynct.ludus_snort
     role_vars:
       - ludus_snort_interface: ens19
+      - ludus_oinkcode: yyyyyyyyyyyyyyyyyyyyyyy
 ```
 
 ## License
