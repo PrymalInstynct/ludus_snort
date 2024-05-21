@@ -1,52 +1,99 @@
 ---
-- name: Create Snort Source Directory
-  ansible.builtin.file:
-    path: /usr/src/snort
-    state: directory
-    mode: '0755'
-    owner: root
-    group: root
+# - name: Create Snort Source Directory
+#   ansible.builtin.file:
+#     path: /usr/src/snort
+#     state: directory
+#     mode: '0755'
+#     owner: root
+#     group: root
+
+- name: Identify Safeclib Latest Version
+  ansible.builtin.shell:
+    cmd: curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v
+  changed_when: false
+  register: safeclib_latest
+
+- name: Set Safeclib version
+  ansible.builtin.set_fact:
+    safeclib_version: '{{ safeclib_latest.stdout }}'
 
 - name: Download Safeclib
+  ansible.builtin.unarchive:
+    src: 'https://github.com/rurban/safeclib/releases/download/v{{ safeclib_version }}/safeclib-{{ safeclib_version }}.tar.bz2'
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Identify Gperftools Latest Version
   ansible.builtin.shell:
-    cmd: wget `curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.bz2$"`
-    chdir: /usr/src/snort
+    cmd: curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2
+  changed_when: false
+  register: gperftools_latest
+
+- name: Set Gperftools version
+  ansible.builtin.set_fact:
+    gperftools_version: '{{ gperftools_latest.stdout }}'
 
 - name: Download Gperftools
+  ansible.builtin.unarchive:
+    src: 'https://github.com/gperftools/gperftools/releases/download/gperftools-{{ gperftools_version }}/gperftools-{{ gperftools_version }}.tar.gz'
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Identify Snort3 Latest Version
   ansible.builtin.shell:
-    cmd: wget `curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.gz$"`
-    chdir: /usr/src/snort
+    cmd: curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8
+  changed_when: false
+  register: snort3_latest
+
+- name: Set Snort3 version
+  ansible.builtin.set_fact:
+    snort3_version: '{{ snort3_latest.stdout }}'
 
 - name: Download Snort3
-  ansible.builtin.shell: |
-    snort3_version=`curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8`
+  ansible.builtin.unarchive:
+    src: 'https://api.github.com/repos/snort3/snort3/tarball/{{ snort3_version }}'
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
 
-    wget `curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url` -O snort-$snort3_version.tar.gz
-  args:
-    chdir: /usr/src/snort
+- name: Identify Snort3 Libdaq Latest Version
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8
+  changed_when: false
+  register: libdaq_latest
+
+- name: Set Snort3 Libdaq version
+  ansible.builtin.set_fact:
+    libdaq_version: '{{ libdaq_latest.stdout }}'
 
 - name: Download Snort3 Libdaq
-  ansible.builtin.shell: |
-    libdaq_version=`curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8`
-
-    wget `curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url` -O libdaq-$libdaq_version.tar.gz
-  args:
-    chdir: /usr/src/snort
+  ansible.builtin.unarchive:
+    src: 'https://api.github.com/repos/snort3/libdaq/tarball/{{ libdaq_version }}'
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
 
 - name: Download Snort3 Extras
-  ansible.builtin.shell: |
-    snort3_version=`curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8`
+  ansible.builtin.unarchive:
+    src: 'https://api.github.com/repos/snort3/snort3_extra/tarball/refs/tags/{{ snort3_version }}'
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
 
-    wget `curl -fsSL https://api.github.com/repos/snort3/snort3_extra/tags | jq -r --arg snort3_version "$snort3_version" '.[] | select(.name==$snort3_version) | .tarball_url'` -O snort3_extras-$snort3_version.tar.gz
-  args:
-    chdir: /usr/src/snort
-
-- name: Download Snort OpenAppID
-  ansible.builtin.get_url:
-    url: https://snort.org/downloads/openappid/snort-openappid.tar.gz
-    dest: /usr/src/snort/snort-openappid.tar.gz
-    mode: '0644'
-    validate_certs: false
+- name: Download Snort3 OpenAppID
+  ansible.builtin.unarchive:
+    src: https://snort.org/downloads/openappid/snort-openappid.tar.gz
+    dest: /usr/src/snort
+    owner: root
+    group: root
+    remote_src: true
 
 - name: Git Clone PulledPork3
   ansible.builtin.git:
