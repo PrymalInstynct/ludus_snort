@@ -1,0 +1,18 @@
+[Unit]
+Description=Snort Daemon
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ExecStartPre=/usr/sbin/ip link set up promisc on arp off multicast off dev {{ ludus_snort_interface }}
+ExecStartPre=/usr/sbin/ethtool -K {{ ludus_snort_interface }} rx off tx off gro off lro off
+ExecStart=/usr/local/bin/snort --plugin-path=/usr/local/lib/snort --plugin-path /usr/local/etc/so_rules/ -c /usr/local/etc/snort/snort.lua -D -u snort -g snort -l /var/log/snort -m 0x1b --create-pidfile -s 65535 -k none -i {{ ludus_snort_interface }}
+Restart=on-failure
+RestartSec=120s
+
+[Install]
+WantedBy=multi-user.target

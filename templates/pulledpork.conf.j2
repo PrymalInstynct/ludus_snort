@@ -1,0 +1,15 @@
+LightSPD_ruleset = true
+oinkcode = {{ ludus_oinkcode }}
+snort_blocklist = true
+et_blocklist = true
+blocklist_path = /usr/local/etc/lists/default.blocklist
+pid_path = /var/log/snort/snort.pid
+ips_policy = security
+rule_mode = simple
+rule_path = /usr/local/etc/rules/snort.rules
+local_rules = /usr/local/etc/rules/local.rules
+ignored_files = includes.rules, snort3-deleted.rules
+include_disabled_rules = true
+sorule_path = /usr/local/etc/so_rules/
+distro = debian-x64
+CONFIGURATION_NUMBER = 3.0.0.3

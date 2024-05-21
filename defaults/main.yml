@@ -1,4 +1,5 @@
 ---
 # Role variables should all be prefaced with the name of the role to avoid
 # name conflicts with other roles
-ludus_snort_interface: ens19
+ludus_snort_interface: enp2s0
+ludus_oinkcode: "{{ vault_ludus_oinkcode }}"
