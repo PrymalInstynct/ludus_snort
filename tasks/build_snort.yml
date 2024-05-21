@@ -1,0 +1,124 @@
+---
+- name: Extract Gperftools
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/gperftools-2.15.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
+
+- name: Build Gperftools
+  ansible.builtin.shell: |
+    ./configure
+
+    make -j$(nproc)
+
+    make install
+  args:
+    chdir: /usr/src/snort/gperftools-2.15
+
+- name: Extract Safeclib
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/safeclib-3.8.1.tar.bz2
+    dest: /usr/src/snort/
+    remote_src: true
+
+- name: Build Safeclib
+  ansible.builtin.shell: |
+    ./configure
+
+    make -j$(nproc)
+
+    make install
+  args:
+    chdir: /usr/src/snort/safeclib-3.8.1.0-gdfea26
+
+- name: Extract Snort3 Libdaq
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/libdaq-v3.0.14.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
+
+- name: Build Snort3 Libdaq
+  ansible.builtin.shell: |
+    ./bootstrap
+
+    ./configure
+
+    make -j$(nproc)
+
+    make install
+  args:
+    chdir: /usr/src/snort/snort3-libdaq-05ea17c
+
+- name: Create VectorScan Build directory
+  ansible.builtin.file:
+    path: /usr/src/snort/vectorscan/build
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Build VectorScan
+  ansible.builtin.shell: |
+    cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
+
+    make -j$(nproc)
+
+    make install
+  args:
+    chdir: /usr/src/snort/vectorscan/build
+
+- name: Extract Snort3
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/snort-3.1.84.0.tar.gz
+    dest: /usr/src/snort/
+    remote_src: true
+
+- name: Build Snort3 | Part 1
+  ansible.builtin.shell: |
+    ./configure_cmake.sh --prefix=/usr/local --enable-tcmalloc
+  args:
+    chdir: /usr/src/snort/snort3-snort3-caf79b9
+
+- name: Build Snort3 | Part 2
+  ansible.builtin.shell: |
+    make -j$(nproc)
+
+    make install
+
+    ldconfig
+  args:
+    chdir: /usr/src/snort/snort3-snort3-caf79b9/build
+
+- name: Extract OpenAppID
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/snort-openappid.tar.gz
+    dest: /usr/local/lib/
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Extract Snort3 Extras
+  ansible.builtin.unarchive:
+    src: /usr/src/snort/snort3_extras-3.1.84.0.tar.gz
+    dest: /usr/src/snort/
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Build Snort3 Extras | Part 1
+  ansible.builtin.shell: |
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+    ./configure_cmake.sh --prefix=/usr/local
+  args:
+    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4
+
+- name: Build Snort3 Extras | Part 2
+  ansible.builtin.shell: |
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+    make -j$(nproc)
+
+    make install
+  args:
+    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4/build

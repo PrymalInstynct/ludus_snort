@@ -1,0 +1,59 @@
+---
+- name: Create Snort Source Directory
+  ansible.builtin.file:
+    path: /usr/src/snort
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Download Safeclib
+  ansible.builtin.shell:
+    cmd: wget `curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.bz2$"`
+    chdir: /usr/src/snort
+
+- name: Download Gperftools
+  ansible.builtin.shell:
+    cmd: wget `curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | egrep ".tar.gz$"`
+    chdir: /usr/src/snort
+
+- name: Download Snort3
+  ansible.builtin.shell: |
+    snort3_version=`curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8`
+
+    wget `curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url` -O snort-$snort3_version.tar.gz
+  args:
+    chdir: /usr/src/snort
+
+- name: Download Snort3 Libdaq
+  ansible.builtin.shell: |
+    libdaq_version=`curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8`
+
+    wget `curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url` -O libdaq-$libdaq_version.tar.gz
+  args:
+    chdir: /usr/src/snort
+
+- name: Download Snort3 Extras
+  ansible.builtin.shell: |
+    snort3_version=`curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8`
+
+    wget `curl -fsSL https://api.github.com/repos/snort3/snort3_extra/tags | jq -r --arg snort3_version "$snort3_version" '.[] | select(.name==$snort3_version) | .tarball_url'` -O snort3_extras-$snort3_version.tar.gz
+  args:
+    chdir: /usr/src/snort
+
+- name: Download Snort OpenAppID
+  ansible.builtin.get_url:
+    url: https://snort.org/downloads/openappid/snort-openappid.tar.gz
+    dest: /usr/src/snort/snort-openappid.tar.gz
+    mode: '0644'
+    validate_certs: false
+
+- name: Git Clone PulledPork3
+  ansible.builtin.git:
+    repo: https://github.com/shirkdog/pulledpork3
+    dest: /usr/src/snort/pulledpork
+
+- name: Git Clone VectorScan
+  ansible.builtin.git:
+    repo: https://github.com/VectorCamp/vectorscan
+    dest: /usr/src/snort/vectorscan

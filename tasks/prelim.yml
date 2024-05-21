@@ -1,0 +1,64 @@
+---
+- name: Create Snort Group
+  ansible.builtin.group:
+    name: snort
+    gid: '{{ ludus_snort_id }}'
+    system: true
+
+- name: Create Snort User
+  ansible.builtin.user:
+    user: snort
+    group: snort
+    uid: '{{ ludus_snort_id }}'
+    comment: Snort Service Account
+    state: present
+    shell: /sbin/nologin
+    home: /var/log/snort
+    create_home: true
+    system: true
+
+- name: Update Operating System
+  ansible.builtin.apt:
+    update-cache: true
+    upgrade: true
+
+- name: Install Dependencies
+  ansible.builtin.apt:
+    name:
+      - autoconf
+      - autotools-dev
+      - bison
+      - build-essential
+      - ca-certificates
+      - cmake
+      - cpputest
+      - curl
+      - ethtool
+      - flex
+      - git
+      - jq
+      - libboost-all-dev
+      - libcmocka-dev
+      - libdumbnet-dev
+      - libfl-dev
+      - libhwloc-dev
+      - libluajit-5.1-dev
+      - liblzma-dev
+      - libmnl-dev
+      - libnetfilter-queue-dev
+      - libpcap-dev
+      - libpcre3
+      - libpcre3-dev
+      - libpcre3-dbg
+      - libsqlite3-dev
+      - libssl-dev
+      - libtool
+      - libunwind-dev
+      - openssl
+      - pkg-config
+      - ragel
+      - uuid-dev
+      - unzip
+      - wget
+      - xz-utils
+      - zlib1g-dev

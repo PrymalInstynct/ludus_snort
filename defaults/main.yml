@@ -3,3 +3,4 @@
 # name conflicts with other roles
 ludus_snort_interface: enp2s0
 ludus_oinkcode: xxxxxxxxxxxxxxxxxxxxxxxx
+ludus_snort_id: 994

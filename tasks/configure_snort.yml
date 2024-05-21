@@ -1,0 +1,72 @@
+---
+- name: Install PulledPork3
+  ansible.builtin.copy:
+    src: /usr/src/snort/pulledpork
+    dest: /usr/local/etc/snort/
+    remote_src: true
+
+- name: Configure PulledPork3
+  ansible.builtin.template:
+    src: pulledpork.conf.j2
+    dest: /usr/local/etc/snort/pulledpork/etc/pulledpork.conf
+
+- name: Create Required Folder Structure
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /usr/local/etc/lists
+    - /usr/local/etc/rules
+    - /usr/local/etc/so_rules
+
+- name: Modify Snort Log Folder
+  ansible.builtin.file:
+    path: /var/log/snort
+    state: directory
+    owner: snort
+    group: snort
+    mode: '5775'
+
+- name: Create Required Files
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: touch
+    owner: root
+    group: root
+    mode: '0643'
+  loop:
+    - /usr/local/etc/rules/snort.rules
+    - /usr/local/etc/rules/local.rules
+    - /usr/local/etc/lists/default.blocklist
+
+- name: Install Snort Rules with PulledPork
+  ansible.builtin.shell:
+    cmd: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
+
+- name: Install custom.lua config
+  ansible.builtin.copy:
+    src: custom.lua
+    dest: /usr/local/etc/snort/custom.lua
+    owner: root
+    group: root
+    mode: '0640'
+
+- name: Update snort.lua config
+  ansible.builtin.lineinfile:
+    path: /usr/local/etc/snort/snort.lua
+    line: include 'custom.lua'
+
+- name: Create Snort Service
+  ansible.builtin.template:
+    src: snort.service.j2
+    dest: /etc/systemd/system/snort.service
+
+- name: Start Snort Service
+  ansible.builtin.systemd_service:
+    name: snort.service
+    state: started
+    enabled: true
+    daemon_reload: true

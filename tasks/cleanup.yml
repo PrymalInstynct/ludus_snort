@@ -1,0 +1,42 @@
+---
+- name: Delete Snort Source Directory
+  ansible.builtin.file:
+    path: /usr/src/snort
+    state: absent
+
+- name: Delete Unneeded Build Dependencies
+  ansible.builtin.apt:
+    name:
+    state: absent
+  loop:
+      - autoconf
+      - autotools-dev
+      - bison
+      - build-essential
+      - cmake
+      - cpputest
+      - ethtool
+      - flex
+      - git
+      - jq
+      - libboost-all-dev
+      - libcmocka-dev
+      - libdumbnet-dev
+      - libfl-dev
+      - libhwloc-dev
+      - libluajit-5.1-dev
+      - liblzma-dev
+      - libmnl-dev
+      - libnetfilter-queue-dev
+      - libpcap-dev
+      - libpcre3
+      - libpcre3-dev
+      - libpcre3-dbg
+      - libsqlite3-dev
+      - libssl-dev
+      - libtool
+      - libunwind-dev
+      - pkg-config
+      - ragel
+      - uuid-dev
+      - zlib1g-dev
