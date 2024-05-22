@@ -7,7 +7,7 @@
     owner: root
     group: root
 
-- name: Identify Safeclib Latest Version #noqa: command-instead-of-module
+- name: Identify Safeclib Latest Version # noqa: command-instead-of-module
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -28,7 +28,7 @@
     group: root
     remote_src: true
 
-- name: Identify Gperftools Latest Version #noqa: command-instead-of-module
+- name: Identify Gperftools Latest Version # noqa: command-instead-of-module
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -49,7 +49,7 @@
     group: root
     remote_src: true
 
-- name: Identify Snort3 Latest Version #noqa: command-instead-of-module
+- name: Identify Snort3 Latest Version # noqa: command-instead-of-module
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -70,11 +70,11 @@
     group: root
     remote_src: true
 
-- name: Identify Snort3 Libdaq Latest Version #noqa: command-instead-of-module
+- name: Identify Snort3 Libdaq Latest Version # noqa: command-instead-of-module
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      
+
       curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8
   changed_when: false
   register: libdaq_latest
@@ -107,14 +107,12 @@
     group: root
     remote_src: true
 
-- name: Git Clone PulledPork3
+- name: Git Clone PulledPork3 # noqa: latest
   ansible.builtin.git:
     repo: https://github.com/shirkdog/pulledpork3
     dest: /usr/src/snort/pulledpork
-    version: HEAD #noqa: latest
 
-- name: Git Clone VectorScan
+- name: Git Clone VectorScan # noqa: latest
   ansible.builtin.git:
     repo: https://github.com/VectorCamp/vectorscan
     dest: /usr/src/snort/vectorscan
-    version: HEAD #noqa: latest
