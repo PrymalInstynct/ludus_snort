@@ -95,12 +95,12 @@
     group: root
     remote_src: true
 
-- name: Git Clone PulledPork3
+- name: Git Clone PulledPork3 #noqa: latest
   ansible.builtin.git:
     repo: https://github.com/shirkdog/pulledpork3
     dest: /usr/src/snort/pulledpork
 
-- name: Git Clone VectorScan
+- name: Git Clone VectorScan #noqa: latest
   ansible.builtin.git:
     repo: https://github.com/VectorCamp/vectorscan
     dest: /usr/src/snort/vectorscan

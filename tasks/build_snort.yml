@@ -16,6 +16,8 @@
 
 - name: Build Gperftools
   ansible.builtin.shell: |
+    set -o pipefail
+
     ./configure
 
     make -j$(nproc)
@@ -42,6 +44,8 @@
 
 - name: Build Safeclib
   ansible.builtin.shell: |
+    set -o pipefail
+
     ./configure
 
     make -j$(nproc)
@@ -68,6 +72,8 @@
 
 - name: Build Snort3 Libdaq
   ansible.builtin.shell: |
+    set -o pipefail
+
     ./bootstrap
 
     ./configure --prefix=/usr/local/lib/daq_s3
@@ -102,6 +108,8 @@
 
 - name: Build VectorScan
   ansible.builtin.shell: |
+    set -o pipefail
+
     cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
 
     make -j$(nproc)
@@ -127,14 +135,15 @@
   loop: '{{ snort3_location.files }}'
 
 - name: Build Snort3 | Part 1
-  ansible.builtin.shell: |
-    ./configure_cmake.sh --prefix=/usr/local --with-daq-includes=/usr/local/lib/daq_s3/include/ --with-daq-libraries=/usr/local/lib/daq_s3/lib/ --enable-tcmalloc 
-  args:
+  ansible.builtin.command:
+    cmd: ./configure_cmake.sh --prefix=/usr/local --with-daq-includes=/usr/local/lib/daq_s3/include/ --with-daq-libraries=/usr/local/lib/daq_s3/lib/ --enable-tcmalloc
     chdir: '{{ snort3_path }}'
   changed_when: false
 
 - name: Build Snort3 | Part 2
   ansible.builtin.shell: |
+    set -o pipefail
+
     make -j$(nproc)
 
     make install
@@ -161,6 +170,8 @@
 
 - name: Build Snort3 Extra | Part 1
   ansible.builtin.shell: |
+    set -o pipefail
+
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
     ./configure_cmake.sh --prefix=/usr/local
@@ -170,6 +181,8 @@
 
 - name: Build Snort3 Extra | Part 2
   ansible.builtin.shell: |
+    set -o pipefail
+
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
     make -j$(nproc)
@@ -183,4 +196,5 @@
   ansible.builtin.copy:
     src: /usr/src/snort/pulledpork
     dest: /usr/local/etc/snort/
+    mode: '0755'
     remote_src: true
