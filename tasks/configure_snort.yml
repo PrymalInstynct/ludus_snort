@@ -3,6 +3,9 @@
   ansible.builtin.template:
     src: pulledpork.conf.j2
     dest: /usr/local/etc/snort/pulledpork/etc/pulledpork.conf
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Create Required Folder Structure
   ansible.builtin.file:

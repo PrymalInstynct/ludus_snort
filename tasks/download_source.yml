@@ -7,9 +7,12 @@
     owner: root
     group: root
 
-- name: Identify Safeclib Latest Version
+- name: Identify Safeclib Latest Version #noqa: command-instead-of-module
   ansible.builtin.shell:
-    cmd: curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v
+    cmd: |
+      set -o pipefail
+
+      curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v
   changed_when: false
   register: safeclib_latest
 
@@ -25,9 +28,12 @@
     group: root
     remote_src: true
 
-- name: Identify Gperftools Latest Version
+- name: Identify Gperftools Latest Version #noqa: command-instead-of-module
   ansible.builtin.shell:
-    cmd: curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2
+    cmd: |
+      set -o pipefail
+
+      curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2
   changed_when: false
   register: gperftools_latest
 
@@ -43,9 +49,12 @@
     group: root
     remote_src: true
 
-- name: Identify Snort3 Latest Version
+- name: Identify Snort3 Latest Version #noqa: command-instead-of-module
   ansible.builtin.shell:
-    cmd: curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8
+    cmd: |
+      set -o pipefail
+
+      curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8
   changed_when: false
   register: snort3_latest
 
@@ -61,9 +70,12 @@
     group: root
     remote_src: true
 
-- name: Identify Snort3 Libdaq Latest Version
+- name: Identify Snort3 Libdaq Latest Version #noqa: command-instead-of-module
   ansible.builtin.shell:
-    cmd: curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8
+    cmd: |
+      set -o pipefail
+      
+      curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8
   changed_when: false
   register: libdaq_latest
 
@@ -95,12 +107,14 @@
     group: root
     remote_src: true
 
-- name: Git Clone PulledPork3 #noqa: latest
+- name: Git Clone PulledPork3
   ansible.builtin.git:
     repo: https://github.com/shirkdog/pulledpork3
     dest: /usr/src/snort/pulledpork
+    version: HEAD #noqa: latest
 
-- name: Git Clone VectorScan #noqa: latest
+- name: Git Clone VectorScan
   ansible.builtin.git:
     repo: https://github.com/VectorCamp/vectorscan
     dest: /usr/src/snort/vectorscan
+    version: HEAD #noqa: latest
