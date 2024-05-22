@@ -4,3 +4,5 @@
 ludus_snort_interface: enp2s0
 ludus_oinkcode: xxxxxxxxxxxxxxxxxxxxxxxx
 ludus_snort_id: 994
+ludus_snort_threads: 2
+ludus_snort_home_net: 10.10.1.0/24,10.10.100.0/24,10.10.111.0/24

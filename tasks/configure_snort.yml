@@ -1,10 +1,4 @@
 ---
-- name: Install PulledPork3
-  ansible.builtin.copy:
-    src: /usr/src/snort/pulledpork
-    dest: /usr/local/etc/snort/
-    remote_src: true
-
 - name: Configure PulledPork3
   ansible.builtin.template:
     src: pulledpork.conf.j2
@@ -42,9 +36,9 @@
     - /usr/local/etc/rules/local.rules
     - /usr/local/etc/lists/default.blocklist
 
-- name: Install Snort Rules with PulledPork
-  ansible.builtin.shell:
-    cmd: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
+# - name: Install Snort Rules with PulledPork
+#   ansible.builtin.shell:
+#     cmd: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
 
 - name: Install custom.lua config
   ansible.builtin.copy:
@@ -54,10 +48,16 @@
     group: root
     mode: '0640'
 
-- name: Update snort.lua config
+- name: Include custom.lua in snort.lua config
   ansible.builtin.lineinfile:
     path: /usr/local/etc/snort/snort.lua
     line: include 'custom.lua'
+
+- name: Update HOME_NET in snort.lua config
+  ansible.builtin.lineinfile:
+    path: /usr/local/etc/snort/snort.lua
+    regexp: ^HOME_NET = .*
+    line: HOME_NET = '[{{ ludus_snort_home_net }}]'
 
 - name: Create Snort Service
   ansible.builtin.template:

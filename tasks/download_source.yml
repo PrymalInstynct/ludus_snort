@@ -90,7 +90,7 @@
 - name: Download Snort3 OpenAppID
   ansible.builtin.unarchive:
     src: https://snort.org/downloads/openappid/snort-openappid.tar.gz
-    dest: /usr/src/snort
+    dest: /usr/local/lib
     owner: root
     group: root
     remote_src: true

@@ -1,124 +1,186 @@
 ---
-- name: Extract Gperftools
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/gperftools-2.15.tar.gz
-    dest: /usr/src/snort/
+# - name: Find Gperftools Directory
+#   ansible.builtin.find:
+#     path: /usr/src/snort
+#     depth: 1
+#     recurse: false
+#     file_type: directory
+#     pattern: gperftools.*
+#     use_regex: true
+#   register: gperftools_location
+
+# - name: Set Gperftools Path
+#   ansible.builtin.set_fact:
+#     gperftools_path: '{{ item.path }}'
+#   loop: '{{ gperftools_location.files }}'
+
+# - name: Build Gperftools
+#   ansible.builtin.shell: |
+#     ./configure
+
+#     make -j$(nproc)
+
+#     make install
+#   args:
+#     chdir: '{{ gperftools_path }}'
+#   changed_when: false
+
+# - name: Find Safeclib Directory
+#   ansible.builtin.find:
+#     path: /usr/src/snort
+#     depth: 1
+#     recurse: false
+#     file_type: directory
+#     pattern: safeclib.*
+#     use_regex: true
+#   register: safeclib_location
+
+# - name: Set Safeclib Path
+#   ansible.builtin.set_fact:
+#     safeclib_path: '{{ item.path }}'
+#   loop: '{{ safeclib_location.files }}'
+
+# - name: Build Safeclib
+#   ansible.builtin.shell: |
+#     ./configure
+
+#     make -j$(nproc)
+
+#     make install
+#   args:
+#     chdir: '{{ safeclib_path }}'
+#   changed_when: false
+
+# - name: Find Snort3 Libdaq Directory
+#   ansible.builtin.find:
+#     path: /usr/src/snort
+#     depth: 1
+#     recurse: false
+#     file_type: directory
+#     pattern: snort3-libdaq.*
+#     use_regex: true
+#   register: libdaq_location
+
+# - name: Set Snort3 Libdaq Path
+#   ansible.builtin.set_fact:
+#     libdaq_path: '{{ item.path }}'
+#   loop: '{{ libdaq_location.files }}'
+
+# - name: Build Snort3 Libdaq
+#   ansible.builtin.shell: |
+#     ./bootstrap
+
+#     ./configure --prefix=/usr/local/lib/daq_s3
+
+#     make -j$(nproc)
+
+#     make install
+#   args:
+#     chdir: '{{ libdaq_path }}'
+#   changed_when: false
+
+# - name: Create Snort3 Libdaq pointer
+#   ansible.builtin.copy:
+#     content: |
+#       /usr/local/lib/daq_s3/lib/
+#     dest: /etc/ld.so.conf.d/libdaq3.conf
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+# - name: Build Snort3 Libdaq
+#   ansible.builtin.command: ldconfig
+#   changed_when: false
+
+# - name: Create VectorScan Build directory
+#   ansible.builtin.file:
+#     path: /usr/src/snort/vectorscan/build
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: '0755'
+
+# - name: Build VectorScan
+#   ansible.builtin.shell: |
+#     cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
+
+#     make -j$(nproc)
+
+#     make install
+#   args:
+#     chdir: /usr/src/snort/vectorscan/build
+#   changed_when: false
+
+# - name: Find Snort3 Directory
+#   ansible.builtin.find:
+#     path: /usr/src/snort
+#     depth: 1
+#     recurse: false
+#     file_type: directory
+#     pattern: snort3-snort3-.{7}$
+#     use_regex: true
+#   register: snort3_location
+
+# - name: Set Snort3 Path
+#   ansible.builtin.set_fact:
+#     snort3_path: '{{ item.path }}'
+#   loop: '{{ snort3_location.files }}'
+
+# - name: Build Snort3 | Part 1
+#   ansible.builtin.shell: |
+#     ./configure_cmake.sh --prefix=/usr/local --with-daq-includes=/usr/local/lib/daq_s3/include/ --with-daq-libraries=/usr/local/lib/daq_s3/lib/ --enable-tcmalloc 
+#   args:
+#     chdir: '{{ snort3_path }}'
+#   changed_when: false
+
+# - name: Build Snort3 | Part 2
+#   ansible.builtin.shell: |
+#     make -j$(nproc)
+
+#     make install
+
+#     ldconfig
+#   args:
+#     chdir: '{{ snort3_path }}/build'
+#   changed_when: false
+
+# - name: Find Snort3 Extra Directory
+#   ansible.builtin.find:
+#     path: /usr/src/snort
+#     depth: 1
+#     recurse: false
+#     file_type: directory
+#     pattern: snort3-snort3_extra.*
+#     use_regex: true
+#   register: extra_location
+
+# - name: Set Snort3 Extra Path
+#   ansible.builtin.set_fact:
+#     extra_path: '{{ item.path }}'
+#   loop: '{{ extra_location.files }}'
+
+# - name: Build Snort3 Extra | Part 1
+#   ansible.builtin.shell: |
+#     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+#     ./configure_cmake.sh --prefix=/usr/local
+#   args:
+#     chdir: '{{ extra_path }}'
+#   changed_when: false
+
+# - name: Build Snort3 Extra | Part 2
+#   ansible.builtin.shell: |
+#     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+#     make -j$(nproc)
+
+#     make install
+#   args:
+#     chdir: '{{ extra_path }}/build'
+#   changed_when: false
+
+- name: Install PulledPork3
+  ansible.builtin.copy:
+    src: /usr/src/snort/pulledpork
+    dest: /usr/local/etc/snort/
     remote_src: true
-
-- name: Build Gperftools
-  ansible.builtin.shell: |
-    ./configure
-
-    make -j$(nproc)
-
-    make install
-  args:
-    chdir: /usr/src/snort/gperftools-2.15
-
-- name: Extract Safeclib
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/safeclib-3.8.1.tar.bz2
-    dest: /usr/src/snort/
-    remote_src: true
-
-- name: Build Safeclib
-  ansible.builtin.shell: |
-    ./configure
-
-    make -j$(nproc)
-
-    make install
-  args:
-    chdir: /usr/src/snort/safeclib-3.8.1.0-gdfea26
-
-- name: Extract Snort3 Libdaq
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/libdaq-v3.0.14.tar.gz
-    dest: /usr/src/snort/
-    remote_src: true
-
-- name: Build Snort3 Libdaq
-  ansible.builtin.shell: |
-    ./bootstrap
-
-    ./configure
-
-    make -j$(nproc)
-
-    make install
-  args:
-    chdir: /usr/src/snort/snort3-libdaq-05ea17c
-
-- name: Create VectorScan Build directory
-  ansible.builtin.file:
-    path: /usr/src/snort/vectorscan/build
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Build VectorScan
-  ansible.builtin.shell: |
-    cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
-
-    make -j$(nproc)
-
-    make install
-  args:
-    chdir: /usr/src/snort/vectorscan/build
-
-- name: Extract Snort3
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/snort-3.1.84.0.tar.gz
-    dest: /usr/src/snort/
-    remote_src: true
-
-- name: Build Snort3 | Part 1
-  ansible.builtin.shell: |
-    ./configure_cmake.sh --prefix=/usr/local --enable-tcmalloc
-  args:
-    chdir: /usr/src/snort/snort3-snort3-caf79b9
-
-- name: Build Snort3 | Part 2
-  ansible.builtin.shell: |
-    make -j$(nproc)
-
-    make install
-
-    ldconfig
-  args:
-    chdir: /usr/src/snort/snort3-snort3-caf79b9/build
-
-- name: Extract OpenAppID
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/snort-openappid.tar.gz
-    dest: /usr/local/lib/
-    owner: root
-    group: root
-    remote_src: true
-
-- name: Extract Snort3 Extras
-  ansible.builtin.unarchive:
-    src: /usr/src/snort/snort3_extras-3.1.84.0.tar.gz
-    dest: /usr/src/snort/
-    owner: root
-    group: root
-    remote_src: true
-
-- name: Build Snort3 Extras | Part 1
-  ansible.builtin.shell: |
-    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-
-    ./configure_cmake.sh --prefix=/usr/local
-  args:
-    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4
-
-- name: Build Snort3 Extras | Part 2
-  ansible.builtin.shell: |
-    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-
-    make -j$(nproc)
-
-    make install
-  args:
-    chdir: /usr/src/snort/snort3-snort3_extra-b81e2e4/build
