@@ -136,7 +136,7 @@
 
 - name: Build Snort3 | Part 1
   ansible.builtin.command:
-    cmd: ./configure_cmake.sh --prefix=/usr/local --with-daq-includes=/usr/local/lib/daq_s3/include/ --with-daq-libraries=/usr/local/lib/daq_s3/lib/ --enable-tcmalloc
+    cmd: ./configure_cmake.sh --prefix=/usr/local --with-daq-includes=/usr/local/lib/daq_s3/include/ --with-daq-libraries=/usr/local/lib/daq_s3/lib/ --enable-tcmalloc # noqa: yaml[line-length]
     chdir: '{{ snort3_path }}'
   changed_when: false
 

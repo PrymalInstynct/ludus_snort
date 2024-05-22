@@ -12,7 +12,7 @@
     cmd: |
       set -o pipefail
 
-      curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v
+      curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v # noqa: yaml[line-length]
   changed_when: false
   register: safeclib_latest
 
@@ -33,7 +33,7 @@
     cmd: |
       set -o pipefail
 
-      curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2
+      curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2 # noqa: yaml[line-length]
   changed_when: false
   register: gperftools_latest
 
