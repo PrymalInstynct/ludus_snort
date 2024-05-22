@@ -9,14 +9,14 @@
   when:
     - ansible_os_family != "Debian"
 
-# - name: Preliminary Tasks
-#   ansible.builtin.include_tasks: prelim.yml
+- name: Preliminary Tasks
+  ansible.builtin.include_tasks: prelim.yml
 
-# - name: Download Snort Source Code
-#   ansible.builtin.include_tasks: download_source.yml
+- name: Download Snort Source Code
+  ansible.builtin.include_tasks: download_source.yml
 
-# - name: Build Snort Source Code
-#   ansible.builtin.include_tasks: build_snort.yml
+- name: Build Snort Source Code
+  ansible.builtin.include_tasks: build_snort.yml
 
 - name: Configure Snort Application
   ansible.builtin.include_tasks: configure_snort.yml

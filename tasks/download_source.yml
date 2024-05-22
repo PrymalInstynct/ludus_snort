@@ -1,11 +1,11 @@
 ---
-# - name: Create Snort Source Directory
-#   ansible.builtin.file:
-#     path: /usr/src/snort
-#     state: directory
-#     mode: '0755'
-#     owner: root
-#     group: root
+- name: Create Snort Source Directory
+  ansible.builtin.file:
+    path: /usr/src/snort
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
 
 - name: Identify Safeclib Latest Version
   ansible.builtin.shell:

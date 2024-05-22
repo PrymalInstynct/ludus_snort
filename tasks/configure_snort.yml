@@ -36,9 +36,9 @@
     - /usr/local/etc/rules/local.rules
     - /usr/local/etc/lists/default.blocklist
 
-# - name: Install Snort Rules with PulledPork
-#   ansible.builtin.shell:
-#     cmd: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
+- name: Install Snort Rules with PulledPork
+  ansible.builtin.shell:
+    cmd: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
 
 - name: Install custom.lua config
   ansible.builtin.copy:
