@@ -15,16 +15,18 @@
   loop: '{{ gperftools_location.files }}'
 
 - name: Build Gperftools
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    ./configure
+      ./configure
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
-  args:
+      make install
     chdir: '{{ gperftools_path }}'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Find Safeclib Directory
@@ -43,16 +45,18 @@
   loop: '{{ safeclib_location.files }}'
 
 - name: Build Safeclib
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    ./configure
+      ./configure
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
-  args:
+      make install
     chdir: '{{ safeclib_path }}'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Find Snort3 Libdaq Directory
@@ -71,18 +75,20 @@
   loop: '{{ libdaq_location.files }}'
 
 - name: Build Snort3 Libdaq
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    ./bootstrap
+      ./bootstrap
 
-    ./configure --prefix=/usr/local/lib/daq_s3
+      ./configure --prefix=/usr/local/lib/daq_s3
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
-  args:
+      make install
     chdir: '{{ libdaq_path }}'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Create Snort3 Libdaq pointer
@@ -107,16 +113,18 @@
     mode: '0755'
 
 - name: Build VectorScan
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
+      cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
-  args:
+      make install
     chdir: /usr/src/snort/vectorscan/build
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Find Snort3 Directory
@@ -146,16 +154,18 @@
   changed_when: false
 
 - name: Build Snort3 | Part 2
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
+      make install
 
-    ldconfig
-  args:
+      ldconfig
     chdir: '{{ snort3_path }}/build'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Find Snort3 Extra Directory
@@ -174,27 +184,31 @@
   loop: '{{ extra_location.files }}'
 
 - name: Build Snort3 Extra | Part 1
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+      export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-    ./configure_cmake.sh --prefix=/usr/local
-  args:
+      ./configure_cmake.sh --prefix=/usr/local
     chdir: '{{ extra_path }}'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Build Snort3 Extra | Part 2
-  ansible.builtin.shell: |
-    set -o pipefail
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
 
-    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+      export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-    make -j$(nproc)
+      make -j$(nproc)
 
-    make install
-  args:
+      make install
     chdir: '{{ extra_path }}/build'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Install PulledPork3

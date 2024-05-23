@@ -49,7 +49,7 @@
     dest: /usr/local/etc/snort/custom.lua
     owner: root
     group: root
-    mode: '0640'
+    mode: '0644'
 
 - name: Include custom.lua in snort.lua config
   ansible.builtin.lineinfile:

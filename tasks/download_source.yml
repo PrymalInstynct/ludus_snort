@@ -13,6 +13,8 @@
       set -o pipefail
 
       curl --silent "https://api.github.com/repos/rurban/safeclib/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.bz2$" | cut -d '/' -f8 | tr -d v
+  args:
+    executable: /bin/bash
   changed_when: false
   register: safeclib_latest
 
@@ -34,6 +36,8 @@
       set -o pipefail
 
       curl --silent "https://api.github.com/repos/gperftools/gperftools/releases/latest" | jq -r '.assets[].browser_download_url' | grep -E ".tar.gz$" | cut -d '/' -f8 | cut -d '-' -f2
+  args:
+    executable: /bin/bash
   changed_when: false
   register: gperftools_latest
 
@@ -55,6 +59,8 @@
       set -o pipefail
 
       curl -fsSL https://api.github.com/repos/snort3/snort3/releases/latest | jq -r .tarball_url|cut -d"/" -f8
+  args:
+    executable: /bin/bash
   changed_when: false
   register: snort3_latest
 
@@ -76,6 +82,8 @@
       set -o pipefail
 
       curl -fsSL https://api.github.com/repos/snort3/libdaq/releases/latest | jq -r .tarball_url | cut -d"/" -f8
+  args:
+    executable: /bin/bash
   changed_when: false
   register: libdaq_latest
 
