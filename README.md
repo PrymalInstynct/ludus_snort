@@ -31,19 +31,22 @@ None.
 
 ```yaml
 ludus:
-  - vm_name: "{{ range_id }}-debian01"
-    hostname: "{{ range_id }}-debian01"
+  - vm_name: "{{ range_id }}-snort"
+    hostname: "{{ range_id }}-snort"
     template: debian-12-x64-server-template
-    vlan: 10
-    ip_last_octet: 11
-    ram_gb: 6
+    vlan: 20
+    ip_last_octet: 2
+    ram_gb: 8
     cpus: 4
     linux: true
     roles:
       - PrymalInstynct.ludus_snort
     role_vars:
-      - ludus_snort_interface: ens19
-      - ludus_oinkcode: yyyyyyyyyyyyyyyyyyyyyyy
+      ludus_snort_interface: ens19
+      ludus_oinkcode: yyyyyyyyyyyyyyyyyyyyyyy
+      ludus_snort_id: 994
+      ludus_snort_threads: 2
+      ludus_snort_home_net: 10.2.10.0/24,10.2.20.0/24
 ```
 
 ## License
