@@ -33,7 +33,7 @@
     state: touch
     owner: root
     group: root
-    mode: '0643'
+    mode: '0644'
   loop:
     - /usr/local/etc/rules/snort.rules
     - /usr/local/etc/rules/local.rules
