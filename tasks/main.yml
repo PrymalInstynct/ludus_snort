@@ -11,20 +11,15 @@
 
 - name: Preliminary Tasks
   ansible.builtin.include_tasks: prelim.yml
-  become: true
 
 - name: Download Snort Source Code
   ansible.builtin.include_tasks: download_source.yml
-  become: true
 
 - name: Build Snort Source Code
   ansible.builtin.include_tasks: build_snort.yml
-  become: true
 
 - name: Configure Snort Application
   ansible.builtin.include_tasks: configure_snort.yml
-  become: true
 
 - name: Clean Up Tasks
   ansible.builtin.include_tasks: cleanup.yml
-  become: true

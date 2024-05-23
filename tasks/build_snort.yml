@@ -15,6 +15,7 @@
   loop: '{{ gperftools_location.files }}'
 
 - name: Build Gperftools
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -45,6 +46,7 @@
   loop: '{{ safeclib_location.files }}'
 
 - name: Build Safeclib
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -75,6 +77,7 @@
   loop: '{{ libdaq_location.files }}'
 
 - name: Build Snort3 Libdaq
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -100,7 +103,8 @@
     group: root
     mode: '0644'
 
-- name: Build Snort3 Libdaq
+- name: Link Snort3 Libdaq Libraries
+  become: true
   ansible.builtin.command: ldconfig
   changed_when: false
 
@@ -113,6 +117,7 @@
     mode: '0755'
 
 - name: Build VectorScan
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -143,6 +148,7 @@
   loop: '{{ snort3_location.files }}'
 
 - name: Build Snort3 | Part 1
+  become: true
   ansible.builtin.command:
     cmd: >
       ./configure_cmake.sh
@@ -154,6 +160,7 @@
   changed_when: false
 
 - name: Build Snort3 | Part 2
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -184,6 +191,7 @@
   loop: '{{ extra_location.files }}'
 
 - name: Build Snort3 Extra | Part 1
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -197,6 +205,7 @@
   changed_when: false
 
 - name: Build Snort3 Extra | Part 2
+  become: true
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -212,6 +221,7 @@
   changed_when: false
 
 - name: Install PulledPork3
+  become: true
   ansible.builtin.copy:
     src: /usr/src/snort/pulledpork
     dest: /usr/local/etc/snort/

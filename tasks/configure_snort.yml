@@ -1,5 +1,6 @@
 ---
 - name: Configure PulledPork3
+  become: true
   ansible.builtin.template:
     src: pulledpork.conf.j2
     dest: /usr/local/etc/snort/pulledpork/etc/pulledpork.conf
@@ -8,6 +9,7 @@
     mode: '0644'
 
 - name: Create Required Folder Structure
+  become: true
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
@@ -20,6 +22,7 @@
     - /usr/local/etc/so_rules
 
 - name: Modify Snort Log Folder
+  become: true
   ansible.builtin.file:
     path: /var/log/snort
     state: directory
@@ -28,6 +31,7 @@
     mode: '5775'
 
 - name: Create Required Files
+  become: true
   ansible.builtin.file:
     path: '{{ item }}'
     state: touch
@@ -40,10 +44,12 @@
     - /usr/local/etc/lists/default.blocklist
 
 - name: Install Snort Rules with PulledPork
+  become: true
   ansible.builtin.command: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
   changed_when: false
 
 - name: Install custom.lua config
+  become: true
   ansible.builtin.copy:
     src: custom.lua
     dest: /usr/local/etc/snort/custom.lua
@@ -52,17 +58,20 @@
     mode: '0644'
 
 - name: Include custom.lua in snort.lua config
+  become: true
   ansible.builtin.lineinfile:
     path: /usr/local/etc/snort/snort.lua
     line: include 'custom.lua'
 
 - name: Update HOME_NET in snort.lua config
+  become: true
   ansible.builtin.lineinfile:
     path: /usr/local/etc/snort/snort.lua
     regexp: ^HOME_NET = .*
     line: HOME_NET = '[{{ ludus_snort_home_net }}]'
 
 - name: Create Snort Service
+  become: true
   ansible.builtin.template:
     src: snort.service.j2
     dest: /etc/systemd/system/snort.service
@@ -71,6 +80,7 @@
     mode: '0644'
 
 - name: Start Snort Service
+  become: true
   ansible.builtin.systemd_service:
     name: snort.service
     state: started
