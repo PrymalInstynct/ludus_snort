@@ -122,7 +122,7 @@
     cmd: |
       set -o pipefail
 
-      cmake -DUSE_CPU_NATIVE=on -DFAT_RUNTIME=off -DBUILD_AVX2=ON ../
+      cmake ../
 
       make -j$(nproc)
 
