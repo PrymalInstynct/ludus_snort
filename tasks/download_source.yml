@@ -7,7 +7,7 @@
     owner: root
     group: root
 
-- name: Identify Safeclib Latest Version # noqa: command-instead-of-module
+- name: Identify Safeclib Latest Version # noqa: command-instead-of-module,yaml[line-length]
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -30,7 +30,7 @@
     group: root
     remote_src: true
 
-- name: Identify Gperftools Latest Version # noqa: command-instead-of-module
+- name: Identify Gperftools Latest Version # noqa: command-instead-of-module,yaml[line-length]
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
