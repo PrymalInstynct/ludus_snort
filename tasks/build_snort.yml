@@ -11,8 +11,10 @@
 
 - name: Set Gperftools Path
   ansible.builtin.set_fact:
-    gperftools_path: '{{ item.path }}'
+    gperftools_path: '{{ gperftools.path }}'
   loop: '{{ gperftools_location.files }}'
+  loop_control:
+    look_var: gperftools
 
 - name: Build Gperftools
   ansible.builtin.shell:
@@ -41,8 +43,10 @@
 
 - name: Set Safeclib Path
   ansible.builtin.set_fact:
-    safeclib_path: '{{ item.path }}'
+    safeclib_path: '{{ safeclib.path }}'
   loop: '{{ safeclib_location.files }}'
+  loop_control:
+    look_var: safeclib
 
 - name: Build Safeclib
   ansible.builtin.shell:
@@ -71,8 +75,10 @@
 
 - name: Set Snort3 Libdaq Path
   ansible.builtin.set_fact:
-    libdaq_path: '{{ item.path }}'
+    libdaq_path: '{{ libdaq.path }}'
   loop: '{{ libdaq_location.files }}'
+  loop_control:
+    look_var: libdaq
 
 - name: Build Snort3 Libdaq
   ansible.builtin.shell:
@@ -139,8 +145,10 @@
 
 - name: Set Snort3 Path
   ansible.builtin.set_fact:
-    snort3_path: '{{ item.path }}'
+    snort3_path: '{{ snort3.path }}'
   loop: '{{ snort3_location.files }}'
+  loop_control:
+    look_var: snort3
 
 - name: Build Snort3 | Part 1
   ansible.builtin.command:
@@ -180,8 +188,10 @@
 
 - name: Set Snort3 Extra Path
   ansible.builtin.set_fact:
-    extra_path: '{{ item.path }}'
+    extra_path: '{{ snort3_extra.path }}'
   loop: '{{ extra_location.files }}'
+  loop_control:
+    look_var: snort3_extra
 
 - name: Build Snort3 Extra | Part 1
   ansible.builtin.shell:

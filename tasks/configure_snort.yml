@@ -9,7 +9,7 @@
 
 - name: Create Required Folder Structure
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: '{{ required_folders }}'
     state: directory
     owner: root
     group: root
@@ -18,6 +18,8 @@
     - /usr/local/etc/lists
     - /usr/local/etc/rules
     - /usr/local/etc/so_rules
+  loop_control:
+    look_var: required_folders
 
 - name: Modify Snort Log Folder
   ansible.builtin.file:
@@ -29,7 +31,7 @@
 
 - name: Create Required Files
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: '{{ required_files }}'
     state: touch
     owner: root
     group: root
@@ -38,6 +40,8 @@
     - /usr/local/etc/rules/snort.rules
     - /usr/local/etc/rules/local.rules
     - /usr/local/etc/lists/default.blocklist
+  loop_control:
+    look_var: required_files
 
 - name: Install Snort Rules with PulledPork
   ansible.builtin.command: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
