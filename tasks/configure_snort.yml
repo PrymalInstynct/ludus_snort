@@ -19,7 +19,7 @@
     - /usr/local/etc/rules
     - /usr/local/etc/so_rules
   loop_control:
-    look_var: required_folders
+    loop_var: required_folders
 
 - name: Modify Snort Log Folder
   ansible.builtin.file:
@@ -41,7 +41,7 @@
     - /usr/local/etc/rules/local.rules
     - /usr/local/etc/lists/default.blocklist
   loop_control:
-    look_var: required_files
+    loop_var: required_files
 
 - name: Install Snort Rules with PulledPork
   ansible.builtin.command: python3 /usr/local/etc/snort/pulledpork/pulledpork.py -c /usr/local/etc/snort/pulledpork/etc/pulledpork.conf -i
