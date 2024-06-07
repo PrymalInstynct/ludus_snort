@@ -1,6 +1,7 @@
 ---
 # Role variables should all be prefaced with the name of the role to avoid
 # name conflicts with other roles
+ludus_snort_install: true # Set to false if Snort is already installed and you just want to update configurations and pull rules
 ludus_snort_interface: enp2s0
 ludus_oinkcode: xxxxxxxxxxxxxxxxxxxxxxxx
 ludus_snort_id: 994

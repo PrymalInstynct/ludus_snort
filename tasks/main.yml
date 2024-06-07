@@ -14,9 +14,11 @@
 
 - name: Download Snort Source Code
   ansible.builtin.include_tasks: download_source.yml
+  when: ludus_snort_install | bool
 
 - name: Build Snort Source Code
   ansible.builtin.include_tasks: build_snort.yml
+  when: ludus_snort_install | bool
 
 - name: Configure Snort Application
   ansible.builtin.include_tasks: configure_snort.yml
